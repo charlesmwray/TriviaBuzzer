@@ -2,6 +2,11 @@
 
 body {
   font-family: "Alata", sans-serif;
+  .button {
+    &.large {
+      font-size: 3rem;
+    }
+  }
   .container {
     display: flex;
     .button-container {

@@ -83,6 +83,7 @@ const App = () => {
       <div className="button-container">
         {player && (
           <button
+            className="large button"
             onClick={() => {
               buzz();
             }}
@@ -95,6 +96,7 @@ const App = () => {
         )}
         {!player && (
           <button
+            className="large button"
             onClick={() => {
               reset();
             }}
