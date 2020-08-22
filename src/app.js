@@ -70,6 +70,7 @@ const App = () => {
       setCanBuzz(false);
     } else {
       setCanBuzz(true);
+      document.getElementById("buzzerButton").focus();
     }
   });
 
@@ -86,6 +87,8 @@ const App = () => {
               buzz();
             }}
             disabled={!canBuzz}
+            id="buzzerButton"
+            autoFocus
           >
             Buzz
           </button>
