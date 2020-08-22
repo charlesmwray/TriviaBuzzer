@@ -15,10 +15,8 @@ import "./styles/styles.scss";
 
 const App = () => {
   const ref = firebase.database().ref("/buzz");
-  const player =
-    window.location.search.length > 0
-      ? window.location.search.substr(3)
-      : false;
+  const urlParams = new URLSearchParams(window.location.search);
+  const player = urlParams.get("p") || false;
 
   const [buzzers, setBuzzers] = useState([]);
   const [canBuzz, setCanBuzz] = useState(true);
