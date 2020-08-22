@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack --mode development --watch",
     "deploy": "webpack --mode production",
+    "gh-deploy": "git checkout gh-pages && git merge master && npm run deploy && git commit -a -m=merge && git push origin gh-pages && git checkout master",
     "serve": "webpack-dev-server"
   },
   "keywords": [],
