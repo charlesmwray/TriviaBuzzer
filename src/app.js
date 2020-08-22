@@ -70,7 +70,6 @@ const App = () => {
       setCanBuzz(false);
     } else {
       setCanBuzz(true);
-      document.getElementById("buzzerButton").focus();
     }
   });
 
