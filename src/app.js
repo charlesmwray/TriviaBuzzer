@@ -16,11 +16,12 @@ import "./styles/styles.scss";
 const App = () => {
   const ref = firebase.database().ref("/buzz");
   const urlParams = new URLSearchParams(window.location.search);
-  const player = urlParams.get("p") || false;
 
+  const [player, setPlayer] = useState(false);
   const [buzzers, setBuzzers] = useState([]);
   const [canBuzz, setCanBuzz] = useState(true);
-  let snap = "";
+
+  const quizmaster = "quizmaster";
 
   const buzz = () => {
     ref.push({
@@ -30,6 +31,21 @@ const App = () => {
 
   const reset = () => {
     ref.set("/", null);
+  };
+
+  const updateBuzzers = data => {
+    const newBuzzers = data ? Object.keys(data) : [];
+    const buzzersUpdate = [];
+
+    if (newBuzzers.length > 0) {
+      newBuzzers.map(b => {
+        buzzersUpdate.push(data[b].player);
+      });
+
+      if (JSON.stringify(buzzers) !== JSON.stringify(buzzersUpdate)) {
+        setBuzzers(buzzersUpdate);
+      }
+    }
   };
 
   const BuzzerDisplay = props => {
@@ -50,19 +66,33 @@ const App = () => {
     }
   };
 
-  const updateBuzzers = data => {
-    const newBuzzers = data ? Object.keys(data) : [];
-    const buzzersUpdate = [];
-
-    if (newBuzzers.length > 0) {
-      newBuzzers.map(b => {
-        buzzersUpdate.push(data[b].player);
-      });
-
-      if (JSON.stringify(buzzers) !== JSON.stringify(buzzersUpdate)) {
-        setBuzzers(buzzersUpdate);
-      }
-    }
+  const DesignatePlayer = () => {
+    return (
+      <>
+        <h1>Team Name?</h1>
+        <form
+          onSubmit={e => {
+            setPlayer(e.target.children.namedItem("playerName").value);
+          }}
+        >
+          <input
+            name="playerName"
+            onBlur={e => {
+              console.log(e);
+            }}
+          ></input>
+        </form>
+        <br />
+        <br />
+        <button
+          onClick={() => {
+            setPlayer(quizmaster);
+          }}
+        >
+          I AM THE QUIZMASTER
+        </button>
+      </>
+    );
   };
 
   useEffect(() => {
@@ -70,6 +100,7 @@ const App = () => {
       setCanBuzz(false);
     } else {
       setCanBuzz(true);
+      player && document.getElementById("buzzerButton").focus();
     }
   });
 
@@ -80,22 +111,26 @@ const App = () => {
   return (
     <div className="container">
       <div className="button-container">
-        {player && (
-          <button
-            className="large button"
-            onClick={() => {
-              buzz();
-            }}
-            disabled={!canBuzz}
-            id="buzzerButton"
-            autoFocus
-          >
-            Buzz
-          </button>
+        {player !== quizmaster && player && (
+          <>
+            <h1>Team: {player}</h1>
+            <button
+              className="buzzer button"
+              onClick={() => {
+                buzz();
+              }}
+              disabled={!canBuzz}
+              id="buzzerButton"
+              autoFocus
+            >
+              Buzz
+            </button>
+          </>
         )}
-        {!player && (
+        {player === quizmaster && (
           <button
-            className="large button"
+            className="buzzer button"
+            id="buzzerButton"
             onClick={() => {
               reset();
             }}
@@ -103,9 +138,10 @@ const App = () => {
             Reset
           </button>
         )}
+        {!player && <DesignatePlayer />}
       </div>
       <div className="buzzer-container">
-        <BuzzerDisplay buzzers={buzzers} />
+        {player && <BuzzerDisplay buzzers={buzzers} />}
       </div>
     </div>
   );
