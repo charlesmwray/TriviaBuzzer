@@ -81,6 +81,7 @@ const App = () => {
               console.log(e);
             }}
           ></input>
+          <button submit>Go!</button>
         </form>
         <br />
         <br />
