@@ -11,6 +11,11 @@ const db = firebase.initializeApp({
   appId: "1:766632424445:web:a4ade7f224860595c39f94"
 });
 
+import Input from "./components/input";
+
+import { Button, Container, Row, Col, ListGroup } from "react-bootstrap";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/styles.scss";
 
 const App = () => {
@@ -49,18 +54,47 @@ const App = () => {
   };
 
   const BuzzerDisplay = props => {
-    if (props.buzzers.length > 0) {
-      return props.buzzers.map(b => {
+    const BuzzerItems = properties => {
+      const shuffleArray = array => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+
+      const colors = shuffleArray([
+        ["#BBE6E4", "#222"],
+        ["#F0F6F6", "#222"],
+        ["#FF66B3", "#fff"],
+        ["#172A3A", "#fff"],
+        ["#47A0FF", "#fff"]
+      ]);
+
+      return properties.items.map((b, i) => {
         if (b) {
           return (
-            <div className="buzzer" key={`${b}1`}>
+            <ListGroup.Item
+              style={{
+                backgroundColor: colors[i][0],
+                color: colors[i][1]
+              }}
+              key={i}
+            >
               {b}
-            </div>
+            </ListGroup.Item>
           );
         } else {
           return "";
         }
       });
+    };
+    if (props.buzzers.length > 0) {
+      return (
+        <ListGroup className="buzzer-items">
+          <BuzzerItems items={props.buzzers} />
+        </ListGroup>
+      );
     } else {
       return "";
     }
@@ -69,29 +103,28 @@ const App = () => {
   const DesignatePlayer = () => {
     return (
       <>
-        <h1>Team Name?</h1>
-        <form
-          onSubmit={e => {
-            setPlayer(e.target.children.namedItem("playerName").value);
-          }}
-        >
-          <input
-            name="playerName"
-            onBlur={e => {
-              console.log(e);
+        <h1>What's your team name?</h1>
+        <form onSubmit={e => {}}>
+          <Input
+            id="playerName"
+            button={{
+              label: "Go!",
+              onClick: e => {
+                setPlayer(document.getElementById("playerName").value);
+              }
             }}
-          ></input>
-          <button submit>Go!</button>
+          />
         </form>
         <br />
         <br />
-        <button
+        <Button
+          variant="dark"
           onClick={() => {
             setPlayer(quizmaster);
           }}
         >
           I AM THE QUIZMASTER
-        </button>
+        </Button>
       </>
     );
   };
@@ -110,41 +143,63 @@ const App = () => {
   });
 
   return (
-    <div className="container">
-      <div className="button-container">
-        {player !== quizmaster && player && (
-          <>
-            <h1>Team: {player}</h1>
-            <button
-              className="buzzer button"
-              onClick={() => {
-                buzz();
-              }}
-              disabled={!canBuzz}
-              id="buzzerButton"
-              autoFocus
-            >
-              Buzz
-            </button>
-          </>
-        )}
-        {player === quizmaster && (
-          <button
-            className="buzzer button"
-            id="buzzerButton"
-            onClick={() => {
-              reset();
-            }}
-          >
-            Reset
-          </button>
-        )}
-        {!player && <DesignatePlayer />}
-      </div>
-      <div className="buzzer-container">
-        {player && <BuzzerDisplay buzzers={buzzers} />}
-      </div>
-    </div>
+    <Container fluid="sm">
+      {player !== quizmaster && player && (
+        <>
+          <Row>
+            <Col sm="12">
+              <h1>Team: {player}</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <Button
+                onClick={() => {
+                  buzz();
+                }}
+                disabled={!canBuzz}
+                id="buzzerButton"
+                autoFocus
+                variant="danger"
+                size="lg"
+              >
+                Buzz
+              </Button>
+            </Col>
+            <Col sm="6">
+              <BuzzerDisplay buzzers={buzzers} />
+            </Col>
+          </Row>
+        </>
+      )}
+      {player === quizmaster && (
+        <>
+          <Row>
+            <Col sm="12">
+              <h1>Quizmaster</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <Button
+                variant="primary"
+                id="buzzerButton"
+                size="lg"
+                onClick={() => {
+                  reset();
+                }}
+              >
+                Reset
+              </Button>
+            </Col>
+            <Col sm="6">
+              <BuzzerDisplay buzzers={buzzers} />
+            </Col>
+          </Row>
+        </>
+      )}
+      {!player && <DesignatePlayer />}
+    </Container>
   );
 };
 
