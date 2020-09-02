@@ -91,7 +91,7 @@ const App = () => {
     };
     if (props.buzzers.length > 0) {
       return (
-        <ListGroup className="buzzer-items">
+        <ListGroup className="buzzer-items" style={{ marginTop: "1rem" }}>
           <BuzzerItems items={props.buzzers} />
         </ListGroup>
       );
