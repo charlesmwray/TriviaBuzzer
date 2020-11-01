@@ -125,6 +125,17 @@ const App = () => {
         >
           I AM THE QUIZMASTER
         </Button>
+        <Button
+          variant="dark"
+          onClick={() => {
+            reset();
+          }}
+          style={{
+            marginLeft: "1rem"
+          }}
+        >
+          Reset
+        </Button>
       </>
     );
   };
